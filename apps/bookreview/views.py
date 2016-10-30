@@ -51,26 +51,34 @@ def dashboard(request):
 	if "user_id" in request.session:
 		user = User.objects.get(id=request.session['user_id'])
 		current_user = User.objects.get(id=request.session['user_id'])
-		reviews = Review.objects.all()
+		# reviews = Review.objects.all()
+		myreviews = Review.objects.filter(user__id=request.session['user_id'])
+		otherreviews = Review.objects.exclude(user__id=request.session['user_id'])
 		context = {
 			'current_user': current_user,
 			'user': user,
-			'reviews': reviews,
+			# 'reviews': reviews,
+			'myreviews': myreviews,
+			'otherreviews': otherreviews
 		}
 		return render(request, 'bookreview/dashboard.html', context)
 	else:
 		del request.session
 		return redirect('/')
 
-def add(request):
-	return render(request, 'bookreview/add.html')
+def add(request, book_id):
+	book = Book.objects.get(id=book_id)
+	user = User.objects.get(id=request.session['user_id'])
+	book.save()
+	return redirect('/dashboard')
+
 
 def add_review(request):
 	book = Book()
 	review = Review()
 	book.title = request.POST.get('title')
-	book.author = request.POST.get('author')
-	book.created_at = timezone.now()
+	# book.author = request.POST.get('author')
+	# book.created_at = timezone.now()
 	book.save()
 	print book.author
 	review.user = User.objects.get(id=request.session['user_id'])
@@ -90,32 +98,32 @@ def show_book(request, book_id):
 	}
 	return render(request, 'bookreview/show.html', context)
 
-def review_add(request, book_id):
-	book = Book.objects.get(id=book_id)
-	review = Review()
-	review.rating = request.POST.get('rating')
-	review.review = request.POST.get('review')
-	review.created_at = timezone.now()
-	review.user = User.objects.get(id=request.session['user_id'])
-	review.book = book
-	review.save()
-	return redirect('/dashboard')
+# def review_add(request, book_id):
+# 	book = Book.objects.get(id=book_id)
+# 	review = Review()
+# 	review.rating = request.POST.get('rating')
+# 	review.review = request.POST.get('review')
+# 	review.created_at = timezone.now()
+# 	review.user = User.objects.get(id=request.session['user_id'])
+# 	review.book = book
+# 	review.save()
+# 	return redirect('/dashboard')
 
 def delete_book(request, book_id):
 	book = Book.objects.get(id=book_id)
 	book.delete()
 	return redirect('/dashboard')
 
-def show_user(request, user_id):
-	user = User.objects.get(id=user_id)
-	reviews = Review.objects.all().filter(user=user)
-	review = Review.objects.filter(user=user)
-	context = {
-	'user': user,
-	'review': review,
-	'reviews': reviews
-	}
-	return render(request, 'bookreview/showuser.html', context)
+# def show_user(request, user_id):
+# 	user = User.objects.get(id=user_id)
+# 	reviews = Review.objects.all().filter(user=user)
+# 	review = Review.objects.filter(user=user)
+# 	context = {
+# 	'user': user,
+# 	'review': review,
+# 	'reviews': reviews
+# 	}
+# 	return render(request, 'bookreview/showuser.html', context)
 
 def logout(request):
 	print "Logging Out"

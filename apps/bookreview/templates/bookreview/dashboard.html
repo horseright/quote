@@ -8,49 +8,39 @@
 </head>
 <body>
 	<div class="container">
-	<a href="/add">Add Book and Review</a>
-		<span>|</span>
 		<a href="/logout">Logout</a>
 		<hr>
 		<h3>Welcome, {{user.first_name}}</h3>
 		<hr>
-		
-		<h4>Recent book reviews:</h4>
-		{% for review in reviews %}
-			<h5><a href="/books/{{review.book.id}}">{{review.book.title}}</a>
-			<h5>Author: {{review.book.author}}</h5>
-			Rating:
-			{% if review.rating == 1 %}
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			{% elif review.rating == 2 %}
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			{% elif review.rating == 3 %}
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			{% elif review.rating == 4 %}
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			{% else %}
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
-			<img src="http://cdn.shopify.com/s/files/1/0134/3742/products/S_S-Classic-Star-Yellow-Art-Print.png" alt="" style="width:20px">
+		<h4>Quotable Quotes</h4>
+		{% for review in otherreviews %}
+			<h5>Quoted by <a href="/books/{{review.book.id}}">{{review.book.title}}</a>
+			<br>
+			<a href="/users/{{review.user.id}}"></a>{{review.review}}
+			<br>
+			{% if current_user.id != review.user_id %}
+				<a href="/books/{{review.book.id}}/add">Add to my list</a>
 			{%endif%}
+		{%endfor%}
+		<h4>my favorites:</h4>
+		{% for review in myreviews %}
+			<h5>Quoted by <a href="/books/{{review.book.id}}">{{review.book.title}}</a>
 			<br>
-			<a href="/users/{{review.user.id}}">{{review.user.first_name}} </a>says: {{review.review}}
+			<a href="/users/{{review.user.id}}"></a>{{review.review}}
 			<br>
-			{{review.created_at}}</h5>
-			<br><br><br>
 			{% if current_user.id == review.user_id %}
 				<a href="/books/{{review.book.id}}/delete">Delete</a>
 			{%endif%}
 		{%endfor%}
-
+		<h4>Contribute a new quote</h4>
+		<form action="/add_review" method="post">
+			{%csrf_token%}
+			Quoted by: <input type="text" name="title" required>
+			<br>
+			Message: <textarea name="review" id="" cols="30" rows="10" required></textarea>
+			<br>
+			<input type="submit" value="Submit">
+		</form>
 		<hr>
 	</div>
 </body>

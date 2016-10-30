@@ -21,20 +21,22 @@
 <div class="container">
 
 <center>
-<h1>Python Book Reviews</h1>
+<h1>Quotes</h1>
 <hr>
 <h4>Register</h4>
 <form action="/register" method="post">
 	{%csrf_token %}
-	First Name: <input type="text" name="first_name" required>
+	Name: <input type="text" name="first_name" required>
 	<br>
-	Last Name: <input type="text" name="last_name" required>
+	Alias: <input type="text" name="last_name" required>
 	<br>
 	<div class="email">
 	Email: <input type="email" name="email" required>
 	</div>
 	<div class="password">
 	Password: <input type="password" name="password" required>
+	<p>Password should be at least 8 characters</p>
+	Confirm PW: <input type="password" name="password2" required>
 	</div>
 	<br>
 	<input type="submit" value="Register" >
